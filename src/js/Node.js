@@ -47,7 +47,7 @@ import { DEFAULT_MODAL_ANCHOR } from './constants'
  *                                          'object', or 'string'.
  */
 export class Node {
-  constructor (editor, params) {
+  constructor(editor, params) {
     /** @type {./treemode} */
     this.editor = editor
     this.dom = {}
@@ -73,7 +73,7 @@ export class Node {
     this.visibleChilds = this.getMaxVisibleChilds()
   }
 
-  getMaxVisibleChilds () {
+  getMaxVisibleChilds() {
     return (this.editor && this.editor.options && this.editor.options.maxVisibleChilds)
       ? this.editor.options.maxVisibleChilds
       : DEFAULT_MAX_VISIBLE_CHILDS
@@ -83,7 +83,7 @@ export class Node {
    * Determine whether the field and/or value of this node are editable
    * @private
    */
-  _updateEditability () {
+  _updateEditability() {
     this.editable = {
       field: true,
       value: true
@@ -94,11 +94,11 @@ export class Node {
       this.editable.value = this.editor.options.mode !== 'view'
 
       if ((this.editor.options.mode === 'tree' || this.editor.options.mode === 'form') &&
-          (typeof this.editor.options.onEditable === 'function')) {
+        (typeof this.editor.options.onEditable === 'function')) {
         const getValue = this.getValue.bind(this)
         const editable = this.editor.options.onEditable({
           field: this.field,
-          get value () {
+          get value() {
             return getValue()
           },
           path: this.getPath()
@@ -128,7 +128,7 @@ export class Node {
    * @return {{string|number}[]} Array containing the path to this node.
    * Element is a number if is the index of an array, a string otherwise.
    */
-  getPath () {
+  getPath() {
     let node = this
     const path = []
     while (node) {
@@ -145,7 +145,7 @@ export class Node {
    * Get the internal path of this node, a list with the child indexes.
    * @return {String[]} Array containing the internal path to this node
    */
-  getInternalPath () {
+  getInternalPath() {
     let node = this
     const internalPath = []
     while (node) {
@@ -161,19 +161,19 @@ export class Node {
    * Get node serializable name
    * @returns {String|Number}
    */
-  getName () {
+  getName() {
     return !this.parent
       ? undefined // do not add an (optional) field name of the root node
       : (this.parent.type !== 'array')
-          ? this.field
-          : this.index
+        ? this.field
+        : this.index
   }
 
   /**
    * Find child node by serializable path
    * @param {Array<String>} path
    */
-  findNodeByPath (path) {
+  findNodeByPath(path) {
     if (!path) {
       return
     }
@@ -197,7 +197,7 @@ export class Node {
    * @return {Node | undefined} Returns the node if the path exists.
    *                            Returns undefined otherwise.
    */
-  findNodeByInternalPath (internalPath) {
+  findNodeByInternalPath(internalPath) {
     if (!internalPath) {
       return undefined
     }
@@ -217,7 +217,7 @@ export class Node {
    * Returns serializable representation for the node
    * @return {SerializableNode}
    */
-  serialize () {
+  serialize() {
     return {
       value: this.getValue(),
       path: this.getPath()
@@ -229,7 +229,7 @@ export class Node {
    * @param {string} jsonPath
    * @return {Node | null} Returns the Node when found, returns null if not found
    */
-  findNode (jsonPath) {
+  findNode(jsonPath) {
     const path = parsePath(jsonPath)
     let node = this
     while (node && path.length > 0) {
@@ -255,7 +255,7 @@ export class Node {
    * the original node.
    * @return {Array.<Node>}
    */
-  findParents () {
+  findParents() {
     const parents = []
     let parent = this.parent
     while (parent) {
@@ -273,7 +273,7 @@ export class Node {
    *                        can be provided. If provided, clicking the error
    *                        icon will set focus to the invalid child node.
    */
-  setError (error, child) {
+  setError(error, child) {
     this.error = error
     this.errorChild = child
 
@@ -285,7 +285,7 @@ export class Node {
   /**
    * Render the error
    */
-  updateError () {
+  updateError() {
     const error = this.fieldError || this.valueError || this.error
     let tdError = this.dom.tdError
     if (error && this.dom && this.dom.tr) {
@@ -345,7 +345,7 @@ export class Node {
       // child node, and set focus to the child node
       const child = this.errorChild
       if (child) {
-        button.onclick = function showInvalidNode () {
+        button.onclick = function showInvalidNode() {
           child.findParents().forEach(parent => {
             parent.expand(false)
           })
@@ -378,7 +378,7 @@ export class Node {
    * node is part of
    * @return {number | null} Returns the index, or null if this is the root node
    */
-  getIndex () {
+  getIndex() {
     if (this.parent) {
       const index = this.parent.childs.indexOf(this)
       return index !== -1 ? index : null
@@ -391,7 +391,7 @@ export class Node {
    * Set parent node
    * @param {Node} parent
    */
-  setParent (parent) {
+  setParent(parent) {
     this.parent = parent
   }
 
@@ -400,7 +400,7 @@ export class Node {
    * @param {String}  field
    * @param {boolean} [fieldEditable]
    */
-  setField (field, fieldEditable) {
+  setField(field, fieldEditable) {
     this.field = field
     this.previousField = field
     this.fieldEditable = (fieldEditable === true)
@@ -410,7 +410,7 @@ export class Node {
    * Get field
    * @return {String}
    */
-  getField () {
+  getField() {
     if (this.field === undefined) {
       this._getDomField()
     }
@@ -424,7 +424,7 @@ export class Node {
    * @param {String} [type]  Specify the type of the value. Can be 'auto',
    *                         'array', 'object', or 'string'
    */
-  setValue (value, type) {
+  setValue(value, type) {
     let childValue, child
     let i, j
     const updateDom = false
@@ -438,8 +438,8 @@ export class Node {
         this.type = type
       } else {
         throw new Error('Type mismatch: ' +
-            'cannot cast value of type "' + this.type +
-            ' to the specified type "' + type + '"')
+          'cannot cast value of type "' + this.type +
+          ' to the specified type "' + type + '"')
       }
     }
 
@@ -547,7 +547,7 @@ export class Node {
    * @param {*} internalValue  Internal value structure keeping type,
    *                           order and duplicates in objects
    */
-  setInternalValue (internalValue) {
+  setInternalValue(internalValue) {
     let childValue, child, visible
     let i, j
     const notUpdateDom = false
@@ -646,7 +646,7 @@ export class Node {
   /**
    * Remove the DOM of this node and it's childs and recreate it again
    */
-  recreateDom () {
+  recreateDom() {
     if (this.dom && this.dom.tr && this.dom.tr.parentNode) {
       const domAnchor = this._detachFromDom()
 
@@ -662,7 +662,7 @@ export class Node {
    * Get value. Value is a JSON structure
    * @return {*} value
    */
-  getValue () {
+  getValue() {
     if (this.type === 'array') {
       const arr = []
       this.childs.forEach(child => {
@@ -688,7 +688,7 @@ export class Node {
    * Get internal value, a structure which maintains ordering and duplicates in objects
    * @return {*} value
    */
-  getInternalValue () {
+  getInternalValue() {
     if (this.type === 'array') {
       return {
         type: this.type,
@@ -718,7 +718,7 @@ export class Node {
    * Get the nesting level of this node
    * @return {Number} level
    */
-  getLevel () {
+  getLevel() {
     return (this.parent ? this.parent.getLevel() + 1 : 0)
   }
 
@@ -726,7 +726,7 @@ export class Node {
    * Get jsonpath of the current node
    * @return {Node[]} Returns an array with nodes
    */
-  getNodePath () {
+  getNodePath() {
     const path = this.parent ? this.parent.getNodePath() : []
     path.push(this)
     return path
@@ -738,7 +738,7 @@ export class Node {
    * not. The DOM elements are not cloned.
    * @return {Node} clone
    */
-  clone () {
+  clone() {
     const clone = new Node(this.editor)
     clone.type = this.type
     clone.field = this.field
@@ -773,7 +773,7 @@ export class Node {
    * @param {boolean} [recurse] Optional recursion, true by default. When
    *                            true, all childs will be expanded recursively
    */
-  expand (recurse) {
+  expand(recurse) {
     if (!this.childs) {
       return
     }
@@ -801,7 +801,7 @@ export class Node {
    * @param {boolean} [recurse] Optional recursion, true by default. When
    *                            true, all childs will be collapsed recursively
    */
-  collapse (recurse) {
+  collapse(recurse) {
     if (!this.childs) {
       return
     }
@@ -828,7 +828,7 @@ export class Node {
   /**
    * Recursively show all childs when they are expanded
    */
-  showChilds () {
+  showChilds() {
     const childs = this.childs
     if (!childs) {
       return
@@ -873,7 +873,7 @@ export class Node {
     }
   }
 
-  _getNextTr () {
+  _getNextTr() {
     if (this.showMore && this.showMore.getDom().parentNode) {
       return this.showMore.getDom()
     }
@@ -887,7 +887,7 @@ export class Node {
    * Hide the node with all its childs
    * @param {{resetVisibleChilds: boolean}} [options]
    */
-  hide (options) {
+  hide(options) {
     const tr = this.dom.tr
     const table = tr ? tr.parentNode : undefined
     if (table) {
@@ -905,7 +905,7 @@ export class Node {
    * Recursively hide all childs
    * @param {{resetVisibleChilds: boolean}} [options]
    */
-  hideChilds (options) {
+  hideChilds(options) {
     const childs = this.childs
     if (!childs) {
       return
@@ -940,7 +940,7 @@ export class Node {
   /**
    * set custom css classes on a node
    */
-  _updateCssClassName () {
+  _updateCssClassName() {
     if (this.dom.field &&
       this.editor &&
       this.editor.options &&
@@ -951,7 +951,7 @@ export class Node {
       const addClasses = this.editor.options.onClassName({
         path: this.getPath(),
         field: this.field,
-        get value () {
+        get value() {
           return getValue()
         }
       }) || ''
@@ -959,7 +959,7 @@ export class Node {
     }
   }
 
-  recursivelyUpdateCssClassesOnNodes () {
+  recursivelyUpdateCssClassesOnNodes() {
     this._updateCssClassName()
     if (Array.isArray(this.childs)) {
       for (let i = 0; i < this.childs.length; i++) {
@@ -971,7 +971,7 @@ export class Node {
   /**
    * Goes through the path from the node to the root and ensures that it is expanded
    */
-  expandTo () {
+  expandTo() {
     let currentNode = this.parent
     while (currentNode) {
       if (!currentNode.expanded) {
@@ -990,7 +990,7 @@ export class Node {
    *                               node and appended node will be updated
    *                               (child count, indexes)
    */
-  appendChild (node, visible, updateDom) {
+  appendChild(node, visible, updateDom) {
     if (this._hasChilds()) {
       // adjust the link to the parent
       node.setParent(this)
@@ -1034,7 +1034,7 @@ export class Node {
    *                               node and appended node will be updated
    *                               (child count, indexes)
    */
-  moveBefore (node, beforeNode, updateDom) {
+  moveBefore(node, beforeNode, updateDom) {
     if (this._hasChilds()) {
       // create a temporary row, to prevent the scroll position from jumping
       // when removing the node
@@ -1078,7 +1078,7 @@ export class Node {
    *                               node and appended node will be updated
    *                               (child count, indexes)
    */
-  insertBefore (node, beforeNode, updateDom) {
+  insertBefore(node, beforeNode, updateDom) {
     if (this._hasChilds()) {
       this.visibleChilds++
 
@@ -1133,7 +1133,7 @@ export class Node {
    * @param {Node} node
    * @param {Node} afterNode
    */
-  insertAfter (node, afterNode) {
+  insertAfter(node, afterNode) {
     if (this._hasChilds()) {
       const index = this.childs.indexOf(afterNode)
       const beforeNode = this.childs[index + 1]
@@ -1153,7 +1153,7 @@ export class Node {
    *                           used to count and limit the results whilst iterating
    * @return {Node[]} results  Array with nodes containing the search text
    */
-  search (text, results) {
+  search(text, results) {
     if (!Array.isArray(results)) {
       results = []
     }
@@ -1216,7 +1216,7 @@ export class Node {
    * The node will not get the focus
    * @param {function(boolean)} [callback]
    */
-  scrollTo (callback) {
+  scrollTo(callback) {
     this.expandPathToNode()
 
     if (this.dom.tr && this.dom.tr.parentNode) {
@@ -1227,7 +1227,7 @@ export class Node {
   /**
    * if the node is not visible, expand its parents
    */
-  expandPathToNode () {
+  expandPathToNode() {
     let node = this
     const recurse = false
     while (node && node.parent) {
@@ -1251,7 +1251,7 @@ export class Node {
    *                                focus available values: 'drag', 'menu',
    *                                'expand', 'field', 'value' (default)
    */
-  focus (elementName) {
+  focus(elementName) {
     Node.focusElement = elementName
 
     if (this.dom.tr && this.dom.tr.parentNode) {
@@ -1325,7 +1325,7 @@ export class Node {
    * @param {Node} node
    * @return {boolean} containsNode
    */
-  containsNode (node) {
+  containsNode(node) {
     if (this === node) {
       return true
     }
@@ -1352,7 +1352,7 @@ export class Node {
    * @return {Node | undefined} node  The removed node on success,
    *                                             else undefined
    */
-  removeChild (node, updateDom) {
+  removeChild(node, updateDom) {
     if (this.childs) {
       const index = this.childs.indexOf(node)
 
@@ -1388,7 +1388,7 @@ export class Node {
    * @param {Node} node
    * @private
    */
-  _remove (node) {
+  _remove(node) {
     this.removeChild(node)
   }
 
@@ -1396,7 +1396,7 @@ export class Node {
    * Change the type of the value of this Node
    * @param {String} newType
    */
-  changeType (newType) {
+  changeType(newType) {
     const oldType = this.type
 
     if (oldType === newType) {
@@ -1405,7 +1405,7 @@ export class Node {
     }
 
     if ((newType === 'string' || newType === 'auto') &&
-        (oldType === 'string' || oldType === 'auto')) {
+      (oldType === 'string' || oldType === 'auto')) {
       // this is an easy change
       this.type = newType
     } else {
@@ -1475,7 +1475,7 @@ export class Node {
    * Test whether the JSON contents of this node are deep equal to provided JSON object.
    * @param {*} json
    */
-  deepEqual (json) {
+  deepEqual(json) {
     let i
 
     if (this.type === 'array') {
@@ -1521,7 +1521,7 @@ export class Node {
    * Retrieve value from DOM
    * @private
    */
-  _getDomValue () {
+  _getDomValue() {
     this._clearValueError()
 
     if (this.dom.value && this.type !== 'array' && this.type !== 'object') {
@@ -1560,14 +1560,14 @@ export class Node {
    * @param {string} message
    * @private
    */
-  _setValueError (message) {
+  _setValueError(message) {
     this.valueError = {
       message
     }
     this.updateError()
   }
 
-  _clearValueError () {
+  _clearValueError() {
     if (this.valueError) {
       this.valueError = null
       this.updateError()
@@ -1579,14 +1579,14 @@ export class Node {
    * @param {string} message
    * @private
    */
-  _setFieldError (message) {
+  _setFieldError(message) {
     this.fieldError = {
       message
     }
     this.updateError()
   }
 
-  _clearFieldError () {
+  _clearFieldError() {
     if (this.fieldError) {
       this.fieldError = null
       this.updateError()
@@ -1597,7 +1597,7 @@ export class Node {
    * Handle a changed value
    * @private
    */
-  _onChangeValue () {
+  _onChangeValue() {
     // get current selection, then override the range such that we can select
     // the added/removed text on undo/redo
     const oldSelection = this.editor.getDomSelection()
@@ -1628,7 +1628,7 @@ export class Node {
    * Handle a changed field
    * @private
    */
-  _onChangeField () {
+  _onChangeField() {
     // get current selection, then override the range such that we can select
     // the added/removed text on undo/redo
     const oldSelection = this.editor.getDomSelection()
@@ -1664,7 +1664,7 @@ export class Node {
    * - background color in case it is empty
    * @private
    */
-  _updateDomValue () {
+  _updateDomValue() {
     const domValue = this.dom.value
     if (domValue) {
       const classNames = ['jsoneditor-value']
@@ -1783,8 +1783,8 @@ export class Node {
 
       // show color picker when value is a color
       if (this.editor.options.colorPicker &&
-          typeof value === 'string' &&
-          isValidColor(value)) {
+        typeof value === 'string' &&
+        isValidColor(value)) {
         if (!this.dom.color) {
           this.dom.color = document.createElement('div')
           this.dom.color.className = 'jsoneditor-color'
@@ -1849,7 +1849,7 @@ export class Node {
     }
   }
 
-  _updateEnumOptions () {
+  _updateEnumOptions() {
     if (!this.enum || !this.dom.select) {
       return
     }
@@ -1866,7 +1866,7 @@ export class Node {
     }
   }
 
-  _deleteDomColor () {
+  _deleteDomColor() {
     if (this.dom.color) {
       this.dom.tdColor.parentNode.removeChild(this.dom.tdColor)
       delete this.dom.tdColor
@@ -1883,7 +1883,7 @@ export class Node {
    * - background color in case it is empty
    * @private
    */
-  _updateDomField () {
+  _updateDomField() {
     const domField = this.dom.field
     if (domField) {
       const tooltip = makeFieldTooltip(this.schema, this.editor.options.language)
@@ -1922,7 +1922,7 @@ export class Node {
    *                                 into a unique name in case it is a duplicate.
    * @private
    */
-  _getDomField (forceUnique) {
+  _getDomField(forceUnique) {
     this._clearFieldError()
 
     if (this.dom.field && this.fieldEditable) {
@@ -1973,7 +1973,7 @@ export class Node {
    * @private
    * @returns {undefined}
    */
-  _updateDomDefault () {
+  _updateDomDefault() {
     // Short-circuit if schema is missing, has no default, or if Node has children
     if (!this.schema || this.schema.default === undefined || this._hasChilds()) {
       return
@@ -2003,7 +2003,7 @@ export class Node {
    * Test whether to show a timestamp tag or not
    * @return {boolean} Returns true when the value is a timestamp
    */
-  _showTimestampTag () {
+  _showTimestampTag() {
     if (typeof this.value !== 'number') {
       return false
     }
@@ -2031,7 +2031,7 @@ export class Node {
   /**
    * Clear the dom of the node
    */
-  clearDom () {
+  clearDom() {
     // TODO: hide the node first?
     // this.hide();
     // TODO: recursively clear dom?
@@ -2044,7 +2044,7 @@ export class Node {
    * The dom will be generated when not yet created
    * @return {Element} tr    HTML DOM TR Element
    */
-  getDom () {
+  getDom() {
     const dom = this.dom
     if (dom.tr) {
       return dom.tr
@@ -2060,7 +2060,7 @@ export class Node {
       const tdDrag = document.createElement('td')
       if (this.editable.field) {
         // create draggable area
-        if (this.parent) {
+        if (this.parent && !this.editor.options.hideDragarea) {
           const domDrag = document.createElement('button')
           domDrag.type = 'button'
           dom.drag = domDrag
@@ -2097,7 +2097,7 @@ export class Node {
    * Test whether a Node is rendered and visible
    * @returns {boolean}
    */
-  isVisible () {
+  isVisible() {
     return (this.dom && this.dom.tr && this.dom.tr.parentNode) || false
   }
 
@@ -2107,7 +2107,7 @@ export class Node {
    * @return {boolean} isDescendant
    * @private
    */
-  isDescendantOf (node) {
+  isDescendantOf(node) {
     let n = this.parent
     while (n) {
       if (n === node) {
@@ -2124,7 +2124,7 @@ export class Node {
    * @return {Element} domField
    * @private
    */
-  _createDomField () {
+  _createDomField() {
     return document.createElement('div')
   }
 
@@ -2133,7 +2133,7 @@ export class Node {
    * Only applied to the currently visible (expanded childs)
    * @param {boolean} highlight
    */
-  setHighlight (highlight) {
+  setHighlight(highlight) {
     if (this.dom.tr) {
       if (highlight) {
         addClassName(this.dom.tr, 'jsoneditor-highlight')
@@ -2158,7 +2158,7 @@ export class Node {
    * @param {boolean} selected
    * @param {boolean} [isFirst]
    */
-  setSelected (selected, isFirst) {
+  setSelected(selected, isFirst) {
     this.selected = selected
 
     if (this.dom.tr) {
@@ -2195,7 +2195,7 @@ export class Node {
    * or Array is allowed.
    * @param {String | Number | Boolean | null} value
    */
-  updateValue (value) {
+  updateValue(value) {
     this.value = value
     this.previousValue = value
     this.valueError = undefined
@@ -2206,7 +2206,7 @@ export class Node {
    * Update the field of the node.
    * @param {String} field
    */
-  updateField (field) {
+  updateField(field) {
     this.field = field
     this.previousField = field
     this.fieldError = undefined
@@ -2223,7 +2223,7 @@ export class Node {
    *                          indexes of the node will be updated too. False by
    *                          default.
    */
-  updateDom (options) {
+  updateDom(options) {
     // update level indentation
     const domTree = this.dom.tree
     if (domTree) {
@@ -2358,12 +2358,12 @@ export class Node {
    * Locate the JSON schema of the node and check for any enum type
    * @private
    */
-  _updateSchema () {
+  _updateSchema() {
     // Locating the schema of the node and checking for any enum type
     if (this.editor && this.editor.options) {
       // find the part of the json schema matching this nodes path
       this.schema = this.editor.options.schema
-      // fix childSchema with $ref, and not display the select element on the child schema because of not found enum
+        // fix childSchema with $ref, and not display the select element on the child schema because of not found enum
         ? Node._findSchema(this.editor.options.schema, this.editor.options.schemaRefs || {}, this.getPath())
         : null
       if (this.schema) {
@@ -2380,7 +2380,7 @@ export class Node {
    * Only applicable when structure is an array or object
    * @private
    */
-  _updateDomIndexes () {
+  _updateDomIndexes() {
     const domValue = this.dom.value
     const childs = this.childs
     if (domValue && childs) {
@@ -2410,7 +2410,7 @@ export class Node {
    * Create an editable value
    * @private
    */
-  _createDomValue () {
+  _createDomValue() {
     let domValue
 
     if (this.type === 'array') {
@@ -2442,7 +2442,7 @@ export class Node {
    * @return {Element} expand
    * @private
    */
-  _createDomExpandButton () {
+  _createDomExpandButton() {
     // create expand button
     const expand = document.createElement('button')
     expand.type = 'button'
@@ -2464,7 +2464,7 @@ export class Node {
    * @return {Element} domTree
    * @private
    */
-  _createDomTree () {
+  _createDomTree() {
     const dom = this.dom
     const domTree = document.createElement('table')
     const tbody = document.createElement('tbody')
@@ -2515,7 +2515,7 @@ export class Node {
    * Handle an event. The event is caught centrally by the editor
    * @param {Event} event
    */
-  onEvent (event) {
+  onEvent(event) {
     const type = event.type
     const target = event.target || event.srcElement
     const dom = this.dom
@@ -2700,7 +2700,7 @@ export class Node {
       }
     }
     if (((target === dom.tdExpand && !expandable) || target === dom.tdField || target === dom.tdSeparator) &&
-        (type === 'click' && !event.hasMoved)) {
+      (type === 'click' && !event.hasMoved)) {
       if (domField) {
         setEndOfContentEditable(domField)
         domField.focus()
@@ -2726,7 +2726,7 @@ export class Node {
    * @param {Event} event
    * @private
    */
-  _onEvent (event) {
+  _onEvent(event) {
     const element = event.target
     const isField = element === this.dom.field
     const isValue = (
@@ -2753,7 +2753,7 @@ export class Node {
    * Key down event handler
    * @param {Event} event
    */
-  onKeyDown (event) {
+  onKeyDown(event) {
     const keynum = event.which || event.keyCode
     const target = event.target || event.srcElement
     const ctrlKey = event.ctrlKey
@@ -2863,8 +2863,8 @@ export class Node {
           nextDom2 = nextDom.nextSibling
           const nextNode2 = Node.getNodeFromTarget(nextDom2)
           if (nextNode && nextNode instanceof AppendNode &&
-              !(lastNode.parent.childs.length === 1) &&
-              nextNode2 && nextNode2.parent) {
+            !(lastNode.parent.childs.length === 1) &&
+            nextNode2 && nextNode2.parent) {
             oldSelection = this.editor.getDomSelection()
             oldParent = firstNode.parent
             oldNextNode = oldParent.childs[lastNode.getIndex() + 1] || oldParent.append
@@ -3088,7 +3088,7 @@ export class Node {
    * @param {boolean} recurse   If true, child nodes will be expanded too
    * @private
    */
-  _onExpand (recurse) {
+  _onExpand(recurse) {
     let table
     let frame
     let scrollTop
@@ -3126,7 +3126,7 @@ export class Node {
    * Open a color picker to select a new color
    * @private
    */
-  _showColorPicker () {
+  _showColorPicker() {
     if (typeof this.editor.options.onColorPicker === 'function' && this.dom.color) {
       const node = this
 
@@ -3136,7 +3136,7 @@ export class Node {
 
       const colorAnchor = createAbsoluteAnchor(this.dom.color, this.editor.getPopupAnchor())
 
-      this.editor.options.onColorPicker(colorAnchor, this.value, function onChange (value) {
+      this.editor.options.onColorPicker(colorAnchor, this.value, function onChange(value) {
         if (typeof value === 'string' && value !== node.value) {
           // force recreating the color block, to cleanup any attached color picker
           node._deleteDomColor()
@@ -3154,7 +3154,7 @@ export class Node {
    * @param {Node} [excludeNode] Optional node to be excluded from the returned field names
    * @return {string[]}
    */
-  getFieldNames (excludeNode) {
+  getFieldNames(excludeNode) {
     if (this.type === 'object') {
       return this.childs
         .filter(child => child !== excludeNode)
@@ -3171,7 +3171,7 @@ export class Node {
    * @param {String} [type]   Can be 'auto', 'array', 'object', or 'string'
    * @private
    */
-  _onInsertBefore (field, value, type) {
+  _onInsertBefore(field, value, type) {
     const oldSelection = this.editor.getDomSelection()
 
     const newNode = new Node(this.editor, {
@@ -3205,7 +3205,7 @@ export class Node {
    * @param {String} [type]   Can be 'auto', 'array', 'object', or 'string'
    * @private
    */
-  _onInsertAfter (field, value, type) {
+  _onInsertAfter(field, value, type) {
     const oldSelection = this.editor.getDomSelection()
 
     const newNode = new Node(this.editor, {
@@ -3236,7 +3236,7 @@ export class Node {
    * @param {String} [type]   Can be 'auto', 'array', 'object', or 'string'
    * @private
    */
-  _onAppend (field, value, type) {
+  _onAppend(field, value, type) {
     const oldSelection = this.editor.getDomSelection()
 
     const newNode = new Node(this.editor, {
@@ -3264,7 +3264,7 @@ export class Node {
    * @param {String} newType
    * @private
    */
-  _onChangeType (newType) {
+  _onChangeType(newType) {
     const oldType = this.type
     if (newType !== oldType) {
       const oldSelection = this.editor.getDomSelection()
@@ -3291,7 +3291,7 @@ export class Node {
    *                                        and invoking onChange.
    * @private
    */
-  sort (path, direction, triggerAction = true) {
+  sort(path, direction, triggerAction = true) {
     if (typeof path === 'string') {
       path = parsePath(path)
     }
@@ -3353,7 +3353,7 @@ export class Node {
    * Replace the value of the node, keep it's state
    * @param {*} newValue
    */
-  update (newValue) {
+  update(newValue) {
     const oldValue = this.getInternalValue()
 
     this.setValue(newValue)
@@ -3372,7 +3372,7 @@ export class Node {
    *            to the DOM again, see _attachToDom.
    * @private
    */
-  _detachFromDom () {
+  _detachFromDom() {
     const table = this.dom.tr ? this.dom.tr.parentNode : undefined
     let lastTr
     if (this.expanded) {
@@ -3396,7 +3396,7 @@ export class Node {
    *            The DOM elements returned by _detachFromDom.
    * @private
    */
-  _attachToDom (domAnchor) {
+  _attachToDom(domAnchor) {
     if (domAnchor.table) {
       if (domAnchor.nextTr) {
         domAnchor.table.insertBefore(this.getDom(), domAnchor.nextTr)
@@ -3415,7 +3415,7 @@ export class Node {
    * @param {String} query    JMESPath query to apply
    * @private
    */
-  transform (query) {
+  transform(query) {
     if (!this._hasChilds()) {
       return
     }
@@ -3449,7 +3449,7 @@ export class Node {
   /**
    * Make this object the root object of the ditor
    */
-  extract () {
+  extract() {
     this.editor.node.hideChilds()
     this.hideChilds()
 
@@ -3476,7 +3476,7 @@ export class Node {
    * @param {String[]} path
    * @returns {Node}
    */
-  getNestedChild (path) {
+  getNestedChild(path) {
     let i = 0
     let child = this
 
@@ -3493,7 +3493,7 @@ export class Node {
    * @param {string} prop
    * @return {Node | undefined} Returns the child node when found, or undefined otherwise
    */
-  findChildByProperty (prop) {
+  findChildByProperty(prop) {
     if (this.type !== 'object') {
       return undefined
     }
@@ -3505,7 +3505,7 @@ export class Node {
    * Create a table row with an append button.
    * @return {HTMLElement | undefined} tr with the AppendNode contents
    */
-  getAppendDom () {
+  getAppendDom() {
     if (!this.append) {
       this.append = new AppendNode(this.editor)
       this.append.setParent(this)
@@ -3517,7 +3517,7 @@ export class Node {
    * Create a table row with an showMore button and text
    * @return {HTMLElement | undefined} tr with the AppendNode contents
    */
-  getShowMoreDom () {
+  getShowMoreDom() {
     if (!this.showMore) {
       this.showMore = new ShowMoreNode(this.editor, this)
     }
@@ -3528,7 +3528,7 @@ export class Node {
    * Get the next sibling of current node
    * @return {Node} nextSibling
    */
-  nextSibling () {
+  nextSibling() {
     const index = this.parent.childs.indexOf(this)
     return this.parent.childs[index + 1] || this.parent.append
   }
@@ -3537,7 +3537,7 @@ export class Node {
    * Get the previously rendered node
    * @return {Node | null} previousNode
    */
-  _previousNode () {
+  _previousNode() {
     let prevNode = null
     const dom = this.getDom()
     if (dom && dom.parentNode) {
@@ -3557,7 +3557,7 @@ export class Node {
    * @return {Node | null} nextNode
    * @private
    */
-  _nextNode () {
+  _nextNode() {
     let nextNode = null
     const dom = this.getDom()
     if (dom && dom.parentNode) {
@@ -3578,7 +3578,7 @@ export class Node {
    * @return {Node | null} firstNode
    * @private
    */
-  _firstNode () {
+  _firstNode() {
     let firstNode = null
     const dom = this.getDom()
     if (dom && dom.parentNode) {
@@ -3594,7 +3594,7 @@ export class Node {
    * @return {Node | null} lastNode
    * @private
    */
-  _lastNode () {
+  _lastNode() {
     let lastNode = null
     const dom = this.getDom()
     if (dom && dom.parentNode) {
@@ -3614,7 +3614,7 @@ export class Node {
    * @return {Element | null} nextElem
    * @private
    */
-  _previousElement (elem) {
+  _previousElement(elem) {
     const dom = this.dom
     // noinspection FallthroughInSwitchStatementJS
     switch (elem) {
@@ -3646,7 +3646,7 @@ export class Node {
    * @return {Element | null} nextElem
    * @private
    */
-  _nextElement (elem) {
+  _nextElement(elem) {
     const dom = this.dom
     // noinspection FallthroughInSwitchStatementJS
     switch (elem) {
@@ -3680,7 +3680,7 @@ export class Node {
    *                                      'menu', 'expand', 'field', 'value'
    * @private
    */
-  _getElementName (element) {
+  _getElementName(element) {
     return Object.keys(this.dom)
       .find(name => this.dom[name] === element)
   }
@@ -3691,11 +3691,11 @@ export class Node {
    * @return {boolean} hasChilds
    * @private
    */
-  _hasChilds () {
+  _hasChilds() {
     return this.type === 'array' || this.type === 'object'
   }
 
-  addTemplates (menu, append) {
+  addTemplates(menu, append) {
     const node = this
     const templates = node.editor.options.templates
     if (templates == null) return
@@ -3728,7 +3728,7 @@ export class Node {
    * @param {function} [onClose]   Callback method called when the context menu
    *                               is being closed.
    */
-  showContextMenu (anchor, onClose) {
+  showContextMenu(anchor, onClose) {
     const node = this
     let items = []
 
@@ -3741,7 +3741,7 @@ export class Node {
           {
             text: translate('auto'),
             className: 'jsoneditor-type-auto' +
-                (this.type === 'auto' ? ' jsoneditor-selected' : ''),
+              (this.type === 'auto' ? ' jsoneditor-selected' : ''),
             title: translate('autoType'),
             click: function () {
               node._onChangeType('auto')
@@ -3750,7 +3750,7 @@ export class Node {
           {
             text: translate('array'),
             className: 'jsoneditor-type-array' +
-                (this.type === 'array' ? ' jsoneditor-selected' : ''),
+              (this.type === 'array' ? ' jsoneditor-selected' : ''),
             title: translate('arrayType'),
             click: function () {
               node._onChangeType('array')
@@ -3759,7 +3759,7 @@ export class Node {
           {
             text: translate('object'),
             className: 'jsoneditor-type-object' +
-                (this.type === 'object' ? ' jsoneditor-selected' : ''),
+              (this.type === 'object' ? ' jsoneditor-selected' : ''),
             title: translate('objectType'),
             click: function () {
               node._onChangeType('object')
@@ -3768,7 +3768,7 @@ export class Node {
           {
             text: translate('string'),
             className: 'jsoneditor-type-string' +
-                (this.type === 'string' ? ' jsoneditor-selected' : ''),
+              (this.type === 'string' ? ' jsoneditor-selected' : ''),
             title: translate('stringType'),
             click: function () {
               node._onChangeType('string')
@@ -3958,12 +3958,12 @@ export class Node {
   /**
    * Show sorting modal
    */
-  showSortModal () {
+  showSortModal() {
     const node = this
     const container = this.editor.options.modalAnchor || DEFAULT_MODAL_ANCHOR
     const json = this.getValue()
 
-    function onSort (sortedBy) {
+    function onSort(sortedBy) {
       const path = sortedBy.path
       const pathArray = parsePath(path)
 
@@ -3977,7 +3977,7 @@ export class Node {
   /**
    * Show transform modal
    */
-  showTransformModal () {
+  showTransformModal() {
     const { modalAnchor, createQuery, executeQuery, queryDescription } = this.editor.options
     const json = this.getValue()
 
@@ -3997,7 +3997,7 @@ export class Node {
    * @return {String} type   Can be 'object', 'array', 'string', 'auto'
    * @private
    */
-  _getType (value) {
+  _getType(value) {
     if (value instanceof Array) {
       return 'array'
     }
@@ -4017,7 +4017,7 @@ export class Node {
    * @return {String} escapedText
    * @private
    */
-  _escapeHTML (text) {
+  _escapeHTML(text) {
     if (typeof text !== 'string') {
       return String(text)
     } else {
@@ -4044,7 +4044,7 @@ export class Node {
    * @return {String} text
    * @private
    */
-  _unescapeHTML (escapedText) {
+  _unescapeHTML(escapedText) {
     const json = '"' + this._escapeJSON(escapedText) + '"'
     const htmlEscaped = parse(json)
 
@@ -4064,7 +4064,7 @@ export class Node {
    * @return {String} escapedText
    * @private
    */
-  _escapeJSON (text) {
+  _escapeJSON(text) {
     // TODO: replace with some smart regex (only when a new solution is faster!)
     let escaped = ''
     let i = 0
@@ -4096,7 +4096,7 @@ export class Node {
    * update the object name according to the callback onNodeName
    * @private
    */
-  updateNodeName () {
+  updateNodeName() {
     const count = this.childs ? this.childs.length : 0
     let nodeName
     if (this.type === 'object' || this.type === 'array') {
@@ -4107,7 +4107,7 @@ export class Node {
             path: this.getPath(),
             size: count,
             type: this.type,
-            get value () {
+            get value() {
               return getValue()
             }
           })
@@ -4126,7 +4126,7 @@ export class Node {
    * update recursively the object's and its children's name.
    * @private
    */
-  recursivelyUpdateNodeName () {
+  recursivelyUpdateNodeName() {
     if (this.expanded) {
       this.updateNodeName()
       if (this.childs !== 'undefined') {
@@ -4302,8 +4302,8 @@ Node.onDrag = (nodes, event) => {
           heightNext = trNext ? (bottomNext - topFirst) : 0
 
           if (nodeNext &&
-              nodeNext.parent.childs.length === nodes.length &&
-              nodeNext.parent.childs[nodes.length - 1] === lastNode) {
+            nodeNext.parent.childs.length === nodes.length &&
+            nodeNext.parent.childs[nodes.length - 1] === lastNode) {
             // We are about to remove the last child of this parent,
             // which will make the parents appendNode visible.
             topThis += 27
@@ -4351,7 +4351,7 @@ Node.onDrag = (nodes, event) => {
         }
 
         if (nodeNext instanceof AppendNode && !nodeNext.isVisible() &&
-            nodeNext.parent.showMore.isVisible()) {
+          nodeNext.parent.showMore.isVisible()) {
           nodeNext = nodeNext._nextNode()
         }
 
@@ -4736,16 +4736,16 @@ Node.blurNodes = nodes => {
 }
 
 // helper function to get the internal path of a node
-function getInternalPath (node) {
+function getInternalPath(node) {
   return node.getInternalPath()
 }
 
 // helper function to get the field of a node
-function getField (node) {
+function getField(node) {
   return node.getField()
 }
 
-function hasOwnProperty (object, key) {
+function hasOwnProperty(object, key) {
   return Object.prototype.hasOwnProperty.call(object, key)
 }
 

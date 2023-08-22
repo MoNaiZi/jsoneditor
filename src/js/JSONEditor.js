@@ -101,6 +101,7 @@ if (typeof Promise === 'undefined') {
  * @param {Object | undefined} json JSON object
  */
 function JSONEditor (container, options, json) {
+  
   if (!(this instanceof JSONEditor)) {
     throw new Error('JSONEditor constructor called without "new".')
   }
