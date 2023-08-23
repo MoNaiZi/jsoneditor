@@ -2253,7 +2253,7 @@ export class Node {
         const schema = this.editor.options.schema
           ? Node._findSchema(this.editor.options.schema, this.editor.options.schemaRefs || {}, this.getPath())
           : undefined
-
+          
         if (schema && schema.title) {
           fieldText = schema.title
         } else if (this._hasChilds()) {

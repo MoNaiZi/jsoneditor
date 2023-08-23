@@ -8,7 +8,7 @@
 
   <link href="../dist/jsoneditor.css" rel="stylesheet" type="text/css">
   <script src="../dist/jsoneditor.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/deep-diff@1/dist/deep-diff.min.js"></script>
   <style type="text/css">
     #jsoneditor {
       width: 500px;
@@ -25,9 +25,34 @@
   <div id="jsoneditor"></div>
 
   <script>
+    // https://github.com/flitbit/diff#readme
+    var lhs = {
+      name: 'my object',
+      description: 'it\'s an object!',
+      details: {
+        it: 'has',
+        an: 'array',
+        with: ['a', 'few', 'elements']
+      }
+    };
+
+    var rhs = {
+      name: 'updated object',
+      description: 'it\'s an object!',
+      details: {
+        it: 'has',
+        an: 'array',
+        with: ['a', 'few', 'more', 'elements', { than: 'before' }]
+      }
+    };
+
+    console.log('diff(lhs, rhs);', DeepDiff(lhs, rhs))
     // create the editor
     const container = document.getElementById('jsoneditor')
     const options = {
+      schema:{
+        title:'组件属性变量'
+      },
       hideDragarea: true,
       onChangeJSON(json) {
         console.log('val', json)
@@ -35,18 +60,16 @@
       onExpand({ path, isExpand, recursive }) {
         console.log('onExpand', { path, isExpand, recursive })
       },
-      onValidate: function (json) {
-        console.log('json',json)
-        var errors = [];
-
-        // if (json && json.customer && !json.customer.address) {
-          errors.push({
-            path: ['customer'],
-            message: 'Required property "address" missing.'
-          });
-        // }
-
-        return errors;
+      onFocus(event) {
+        console.log(event)
+      },
+      // onEvent(node, event) {
+      //   console.log('node', node, event)
+      // },
+      onCreateMenu(items, node) {
+        console.log('items', items, node)
+        const list = items
+        return list
       }
     }
     const editor = new JSONEditor(container, options)
@@ -63,7 +86,8 @@
       'time': 1575599819000,
       'string': 'Hello World',
       'onlineDemo': 'https://jsoneditoronline.org/',
-      'img': 'https://cdn.uviewui.com/uview/album/1.jpg'
+      'img': 'https://cdn.uviewui.com/uview/album/1.jpg',
+      "aaa": 111
     }
 
     editor.set(json)

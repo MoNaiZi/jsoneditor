@@ -11,7 +11,7 @@ import { addClassName, removeClassName } from './util'
  * @constructor
  */
 export class TreePath {
-  constructor (container, root) {
+  constructor(container, root) {
     if (container) {
       this.root = root
       this.path = document.createElement('div')
@@ -26,7 +26,7 @@ export class TreePath {
   /**
    * Reset component to initial status
    */
-  reset () {
+  reset() {
     this.path.textContent = translate('selectNode')
   }
 
@@ -35,7 +35,7 @@ export class TreePath {
    * @param {Array<{name: String, childs: Array}>} pathObjs a list of path objects
    *
    */
-  setPath (pathObjs) {
+  setPath(pathObjs) {
     const me = this
 
     this.path.textContent = ''
@@ -45,7 +45,17 @@ export class TreePath {
         const pathEl = document.createElement('span')
         let sepEl
         pathEl.className = 'jsoneditor-treepath-element'
-        pathEl.innerText = pathObj.name
+
+
+        if (pathObj.name === 'object' && pathObj.node?.schema?.title
+        ) {
+          pathEl.innerText = pathObj.node?.schema?.title
+        } else {
+          pathEl.innerText = pathObj.name
+        }
+
+
+
         pathEl.onclick = _onSegmentClick.bind(me, pathObj)
 
         me.path.appendChild(pathEl)
@@ -90,7 +100,7 @@ export class TreePath {
       })
     }
 
-    function _onShowAllClick (pathObjs) {
+    function _onShowAllClick(pathObjs) {
       me.contentMenuClicked = false
       addClassName(me.path, 'show-all')
       me.path.style.width = me.path.parentNode.getBoundingClientRect().width - 10 + 'px'
@@ -107,13 +117,13 @@ export class TreePath {
       }
     }
 
-    function _onSegmentClick (pathObj) {
+    function _onSegmentClick(pathObj) {
       if (this.selectionCallback) {
         this.selectionCallback(pathObj)
       }
     }
 
-    function _onContextMenuItemClick (pathObj, selection) {
+    function _onContextMenuItemClick(pathObj, selection) {
       if (this.contextMenuCallback) {
         this.contextMenuCallback(pathObj, selection)
       }
@@ -124,7 +134,7 @@ export class TreePath {
    * set a callback function for selection of path section
    * @param {Function} callback function to invoke when section is selected
    */
-  onSectionSelected (callback) {
+  onSectionSelected(callback) {
     if (typeof callback === 'function') {
       this.selectionCallback = callback
     }
@@ -134,7 +144,7 @@ export class TreePath {
    * set a callback function for selection of path section
    * @param {Function} callback function to invoke when section is selected
    */
-  onContextMenuItemSelected (callback) {
+  onContextMenuItemSelected(callback) {
     if (typeof callback === 'function') {
       this.contextMenuCallback = callback
     }

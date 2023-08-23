@@ -65,6 +65,7 @@ export function appendNodeFactory (Node) {
     const tdAppend = document.createElement('td')
     const domText = document.createElement('div')
     domText.appendChild(document.createTextNode('(' + translate('empty') + ')'))
+    
     domText.className = 'jsoneditor-readonly'
     tdAppend.appendChild(domText)
     dom.td = tdAppend
